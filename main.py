@@ -2,6 +2,7 @@ from TikTokApi import TikTokApi
 import csv
 import os
 import time
+from csv_safety import spreadsheet_safe
 
 
 api = TikTokApi()
@@ -27,7 +28,7 @@ while True:
         writer = csv.writer(f)
        
         for tiktok in tiktoks:
-            title = tiktok["desc"]
+            title = spreadsheet_safe(tiktok["desc"])
             if title in existing_posts:
                 continue
 
@@ -36,6 +37,7 @@ while True:
             shares = tiktok["stats"]["shareCount"]
             comments = tiktok["stats"]["commentCount"]
             video_url = tiktok["video"]["downloadAddr"]
-            writer.writerow([title, author, likes, shares, comments, video_url])
+            writer.writerow([spreadsheet_safe(value) for value in
+                             [title, author, likes, shares, comments, video_url]])
     
     time.sleep(3600)
